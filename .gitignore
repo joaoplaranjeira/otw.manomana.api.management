@@ -1,0 +1,10 @@
+**/bin/
+**/obj/
+.env
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/tasks.json
+TestResults/
+*.user
+*.suo

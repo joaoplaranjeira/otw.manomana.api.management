@@ -1,0 +1,17 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_HTTP_PORTS: 8080
+      ConnectionStrings__Database: ${CONNECTION_STRING_DATABASE:?Set CONNECTION_STRING_DATABASE}
+      Jwt__Issuer: ManoMana
+      Jwt__Audience: ManoMana
+      Jwt__SigningKey: ${JWT_SIGNING_KEY:?Set JWT_SIGNING_KEY}
+      AdminSeed__Username: ${ADMIN_SEED_USERNAME:?Set ADMIN_SEED_USERNAME}
+      AdminSeed__Password: ${ADMIN_SEED_PASSWORD:?Set ADMIN_SEED_PASSWORD}
+    ports:
+      - "8080:8080"
+    restart: unless-stopped

@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <!-- Event is the domain language required by the public specification. -->
+    <NoWarn>$(NoWarn);CA1716;CA1848;CA1873</NoWarn>
+  </PropertyGroup>
+</Project>

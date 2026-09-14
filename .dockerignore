@@ -1,0 +1,8 @@
+**/bin
+**/obj
+.git
+.env
+.idea
+.vscode
+Instructions
+tests

@@ -1,0 +1,27 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "ManoMana: Start API in Docker Desktop",
+      "type": "shell",
+      "command": "docker",
+      "args": [
+        "compose",
+        "up",
+        "--build",
+        "--detach",
+        "--remove-orphans",
+        "api"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      }
+    }
+  ]
+}

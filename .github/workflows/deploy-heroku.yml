@@ -1,0 +1,77 @@
+name: Deploy to Heroku
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: heroku-production
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore ManoMana.sln
+
+      - name: Run tests
+        run: dotnet test ManoMana.sln --configuration Release --no-restore
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      HEROKU_APP_NAME: ${{ vars.HEROKU_APP_NAME }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate deployment configuration
+        shell: bash
+        run: |
+          if [[ -z "$HEROKU_API_KEY" ]]; then
+            echo "Repository secret HEROKU_API_KEY is not configured."
+            exit 1
+          fi
+          if [[ -z "$HEROKU_APP_NAME" ]]; then
+            echo "Repository variable HEROKU_APP_NAME is not configured."
+            exit 1
+          fi
+
+      - name: Install Heroku CLI
+        run: curl https://cli-assets.heroku.com/install.sh | sh
+
+      - name: Configure Heroku container stack
+        run: heroku stack:set container --app "$HEROKU_APP_NAME"
+
+      - name: Log in to Heroku Container Registry
+        shell: bash
+        run: echo "$HEROKU_API_KEY" | docker login --username=_ --password-stdin registry.heroku.com
+
+      - name: Build container image
+        run: docker build --platform linux/amd64 --tag "registry.heroku.com/${HEROKU_APP_NAME}/web" .
+
+      - name: Push container image
+        run: docker push "registry.heroku.com/${HEROKU_APP_NAME}/web"
+
+      - name: Release container image
+        run: heroku container:release web --app "$HEROKU_APP_NAME"
+
+      - name: Show deployment status
+        run: heroku ps --app "$HEROKU_APP_NAME"
