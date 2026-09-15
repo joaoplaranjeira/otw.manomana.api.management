@@ -44,6 +44,13 @@ public sealed class AdminController(IAuthenticationService authentication, IAdmi
         return NoContent();
     }
 
+    [HttpPost("event/reset")]
+    public async Task<IActionResult> ResetEvent(CancellationToken cancellationToken)
+    {
+        await adminService.ResetEventAsync(cancellationToken);
+        return NoContent();
+    }
+
     [HttpPost("birth")]
     public async Task<IActionResult> CreateBirth(UpsertBirthRequest request, CancellationToken cancellationToken)
     {

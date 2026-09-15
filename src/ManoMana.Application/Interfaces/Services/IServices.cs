@@ -27,6 +27,7 @@ public interface IAdminService
     Task DeletePredictionAsync(Guid id, CancellationToken cancellationToken);
     Task OpenEventAsync(CancellationToken cancellationToken);
     Task CloseEventAsync(CancellationToken cancellationToken);
+    Task ResetEventAsync(CancellationToken cancellationToken);
     Task CreateBirthAsync(UpsertBirthRequest request, CancellationToken cancellationToken);
     Task UpdateBirthAsync(UpsertBirthRequest request, CancellationToken cancellationToken);
     Task PublishBirthAsync(CancellationToken cancellationToken);

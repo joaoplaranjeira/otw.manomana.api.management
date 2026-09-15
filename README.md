@@ -91,4 +91,4 @@ Os testes de integração usam EF Core InMemory e não precisam de uma instânci
 
 ## Rotas
 
-Públicas: `GET /api/event`, criação/consulta/edição de palpites, estatísticas e ranking. Administrativas: login, listagem/exportação/remoção de palpites, abertura/fecho do evento, registo/edição/publicação do nascimento. As rotas administrativas, exceto login, exigem `Authorization: Bearer {jwt}`; a edição pública de um palpite exige `Authorization: Prediction {editToken}`.
+Públicas: `GET /api/event`, criação/consulta/edição de palpites, estatísticas e ranking. Administrativas: login, listagem/exportação/remoção de palpites, abertura/fecho/reinício do evento, registo/edição/publicação do nascimento. `POST /api/admin/event/reset` elimina o evento atual com todos os seus palpites e dados de nascimento e cria imediatamente um novo evento aberto. As rotas administrativas, exceto login, exigem `Authorization: Bearer {jwt}`; a edição pública de um palpite exige `Authorization: Prediction {editToken}`.

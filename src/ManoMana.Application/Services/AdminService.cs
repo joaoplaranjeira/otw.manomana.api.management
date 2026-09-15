@@ -59,6 +59,30 @@ public sealed class AdminService(
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
+    public Task ResetEventAsync(CancellationToken cancellationToken) =>
+        unitOfWork.ExecuteInTransactionAsync(async ct =>
+        {
+            var current = await Current(ct);
+            var currentPredictions = await predictions.GetByEventAsync(current.Id, ct);
+            var currentBirth = await births.GetByEventAsync(current.Id, ct);
+            var now = DateTimeOffset.UtcNow;
+
+            predictions.RemoveRange(currentPredictions);
+            if (currentBirth is not null) births.Remove(currentBirth);
+            events.Remove(current);
+            await events.AddAsync(new Event
+            {
+                Id = Guid.NewGuid(),
+                Name = current.Name,
+                Status = EventStatus.Open,
+                CreatedAt = now,
+                UpdatedAt = now
+            }, ct);
+
+            await unitOfWork.SaveChangesAsync(ct);
+            logger.LogWarning("Event {EventId} and all of its data were reset", current.Id);
+        }, cancellationToken);
+
     public async Task CreateBirthAsync(UpsertBirthRequest request, CancellationToken cancellationToken)
     {
         RequestValidator.ValidateBirth(request);

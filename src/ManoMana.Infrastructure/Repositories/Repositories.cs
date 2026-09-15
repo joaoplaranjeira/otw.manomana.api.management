@@ -12,6 +12,7 @@ public sealed class EventRepository(ManoManaDbContext dbContext) : IEventReposit
         .OrderByDescending(x => x.CreatedAt).FirstOrDefaultAsync(cancellationToken);
     public Task AddAsync(Event entity, CancellationToken cancellationToken) =>
         dbContext.Events.AddAsync(entity, cancellationToken).AsTask();
+    public void Remove(Event entity) => dbContext.Events.Remove(entity);
 }
 
 public sealed class PredictionRepository(ManoManaDbContext dbContext) : IPredictionRepository
@@ -23,6 +24,7 @@ public sealed class PredictionRepository(ManoManaDbContext dbContext) : IPredict
     public Task AddAsync(Prediction prediction, CancellationToken cancellationToken) =>
         dbContext.Predictions.AddAsync(prediction, cancellationToken).AsTask();
     public void Remove(Prediction prediction) => dbContext.Predictions.Remove(prediction);
+    public void RemoveRange(IEnumerable<Prediction> predictions) => dbContext.Predictions.RemoveRange(predictions);
 }
 
 public sealed class BirthRepository(ManoManaDbContext dbContext) : IBirthRepository
@@ -31,6 +33,7 @@ public sealed class BirthRepository(ManoManaDbContext dbContext) : IBirthReposit
         dbContext.Births.FirstOrDefaultAsync(x => x.EventId == eventId, cancellationToken);
     public Task AddAsync(Birth birth, CancellationToken cancellationToken) =>
         dbContext.Births.AddAsync(birth, cancellationToken).AsTask();
+    public void Remove(Birth birth) => dbContext.Births.Remove(birth);
 }
 
 public sealed class AdminUserRepository(ManoManaDbContext dbContext) : IAdminUserRepository

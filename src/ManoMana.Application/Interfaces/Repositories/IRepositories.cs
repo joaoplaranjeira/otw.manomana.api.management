@@ -6,6 +6,7 @@ public interface IEventRepository
 {
     Task<Event?> GetCurrentAsync(CancellationToken cancellationToken);
     Task AddAsync(Event entity, CancellationToken cancellationToken);
+    void Remove(Event entity);
 }
 
 public interface IPredictionRepository
@@ -14,12 +15,14 @@ public interface IPredictionRepository
     Task<IReadOnlyCollection<Prediction>> GetByEventAsync(Guid eventId, CancellationToken cancellationToken);
     Task AddAsync(Prediction prediction, CancellationToken cancellationToken);
     void Remove(Prediction prediction);
+    void RemoveRange(IEnumerable<Prediction> predictions);
 }
 
 public interface IBirthRepository
 {
     Task<Birth?> GetByEventAsync(Guid eventId, CancellationToken cancellationToken);
     Task AddAsync(Birth birth, CancellationToken cancellationToken);
+    void Remove(Birth birth);
 }
 
 public interface IAdminUserRepository
