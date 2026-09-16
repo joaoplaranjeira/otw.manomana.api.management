@@ -19,6 +19,7 @@ public sealed class PredictionService(
     IOptions<PredictionOptions> options,
     ILogger<PredictionService> logger) : IPredictionService
 {
+    private static readonly DateOnly MinimumDateIncludedInBirthDateAverage = new(2026, 9, 15);
     private readonly PredictionOptions _options = options.Value;
 
     public async Task<CreatePredictionResponse> CreateAsync(CreatePredictionRequest request, CancellationToken cancellationToken)
@@ -82,7 +83,10 @@ public sealed class PredictionService(
         var all = await predictions.GetByEventAsync(current.Id, cancellationToken);
         var boy = all.Count(x => x.Gender == Gender.Boy);
         var girl = all.Count(x => x.Gender == Gender.Girl);
-        var dates = all.Where(x => x.PredictedBirthDate.HasValue).Select(x => x.PredictedBirthDate!.Value.DayNumber).ToArray();
+        var dates = all
+            .Where(x => x.PredictedBirthDate >= MinimumDateIncludedInBirthDateAverage)
+            .Select(x => x.PredictedBirthDate!.Value.DayNumber)
+            .ToArray();
         var weights = all.Where(x => x.PredictedWeightGrams.HasValue).Select(x => x.PredictedWeightGrams!.Value).ToArray();
         var heights = all.Where(x => x.PredictedHeightCentimeters.HasValue).Select(x => x.PredictedHeightCentimeters!.Value).ToArray();
         var total = all.Count;
